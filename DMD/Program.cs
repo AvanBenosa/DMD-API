@@ -7,6 +7,7 @@ using static DMD.API.Configurations.Services;
 using static DMD.API.Configurations.Identity;
 using static DMD.API.Configurations.Authentication;
 using DMD.API.Configurations;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,16 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 
 var app = builder.Build();
 UseSwagger(app);
+
+var uploadsRoot = Path.Combine(app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot"), "uploads");
+Directory.CreateDirectory(Path.Combine(uploadsRoot, "patients"));
+
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsRoot),
+    RequestPath = "/uploads"
+});
 
 app.Use(async (context, next) =>
 {

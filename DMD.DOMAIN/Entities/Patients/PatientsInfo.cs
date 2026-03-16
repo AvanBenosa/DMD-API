@@ -23,6 +23,8 @@ namespace DMD.DOMAIN.Entities.Patients
         public BloodTypes BloodType { get; set; }
         public CivilStatus CivilStatus { get; set; }
 
+        public string ProfilePicture { get; set; }
+
         public PatientTag Tag { get; set; }
 
         public List<PatientMedicalHistory> MedicalHistories { get; set; }

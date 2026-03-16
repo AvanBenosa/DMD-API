@@ -10,9 +10,21 @@ using Queries = DMD.APPLICATION.PatientsModule.Patient.Queries;
 
 namespace DMD.API.Controllers.Patient
 {
+    public class UploadProfilePictureRequest
+    {
+        public IFormFile File { get; set; }
+        public string? OldFilePath { get; set; }
+    }
+
     [Route("api/dmd/patient")]
     public class PatientController : BaseController
     {
+        private readonly IWebHostEnvironment webHostEnvironment;
+
+        public PatientController(IWebHostEnvironment webHostEnvironment)
+        {
+            this.webHostEnvironment = webHostEnvironment;
+        }
 
         [HttpGet("get-patient")]
         [Description("Query return Patient info model")]
@@ -63,6 +75,69 @@ namespace DMD.API.Controllers.Patient
 
             var data = ((SuccessResponse<bool>)result).Data;
             return Ok(data);
+        }
+
+        [HttpPost("upload-profile-picture")]
+        [Description("Upload patient profile picture and return saved file path")]
+        [ProducesResponseType(typeof(ProfilePictureUploadModel), (int)HttpStatusCode.OK)]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(10_000_000)]
+        public async Task<IActionResult> UploadProfilePicture([FromForm] UploadProfilePictureRequest request)
+        {
+            var file = request?.File;
+
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+                return BadRequest("Invalid file type. Allowed: jpg, jpeg, png, gif, webp.");
+
+            var uploadsFolder = Path.Combine(
+                webHostEnvironment.WebRootPath ?? Path.Combine(webHostEnvironment.ContentRootPath, "wwwroot"),
+                "uploads",
+                "patients");
+
+            Directory.CreateDirectory(uploadsFolder);
+
+            var generatedFileName = $"{Guid.NewGuid():N}{extension}";
+            var physicalPath = Path.Combine(uploadsFolder, generatedFileName);
+
+            await using (var stream = new FileStream(physicalPath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            DeleteOldProfilePictureIfOwned(request?.OldFilePath, uploadsFolder);
+
+            return Ok(new ProfilePictureUploadModel
+            {
+                FileName = generatedFileName,
+                FilePath = $"/uploads/patients/{generatedFileName}"
+            });
+        }
+
+        private static void DeleteOldProfilePictureIfOwned(string? oldFilePath, string uploadsFolder)
+        {
+            if (string.IsNullOrWhiteSpace(oldFilePath))
+                return;
+
+            var normalizedPath = oldFilePath.Replace('\\', '/').Trim();
+
+            if (!normalizedPath.StartsWith("/uploads/patients/", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var oldFileName = Path.GetFileName(normalizedPath);
+
+            if (string.IsNullOrWhiteSpace(oldFileName))
+                return;
+
+            var existingPhysicalPath = Path.Combine(uploadsFolder, oldFileName);
+
+            if (System.IO.File.Exists(existingPhysicalPath))
+                System.IO.File.Delete(existingPhysicalPath);
         }
     }
 }

@@ -25,6 +25,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Update
         public string Religion { get; set; }
         public BloodTypes BloodType { get; set; }
         public CivilStatus CivilStatus { get; set; }
+        public string ProfilePicture { get; set; }
     }
     public class CommandHandler : IRequestHandler<Command, Response>
     {
@@ -57,7 +58,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Update
                 item.ContactNumber = request.ContactNumber;
                 item.BirthDate = request.BirthDate;
                 item.BloodType = request.BloodType;
-
+                item.ProfilePicture = request.ProfilePicture;
                 await dbContext.SaveChangesAsync();
                 await dbContext.DisposeAsync();
 
