@@ -50,12 +50,9 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
                     EmailAddress = request.EmailAddress,
                     Occupation = request.Occupation,
                     Religion = request.Religion,
-                    CivilStatus = request.CivilStatus,
-                    Suffix = request.Suffix,
                     Address = request.Address,
                     ContactNumber = request.ContactNumber,
                     BirthDate = request.BirthDate,
-                    BloodType = request.BloodType,
                 };
 
                 dbContext.PatientInfos.Add(newItem);

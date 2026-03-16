@@ -1,14 +1,13 @@
-﻿using DMD.DOMAIN.Enums;
+using AutoMapper;
+using DMD.DOMAIN.Entities.Patients;
+using DMD.DOMAIN.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DMD.APPLICATION.PatientsModule.Patient.Models
 {
     public class PatientModel
     {
+        public int Id { get; set; }
         public string PatientNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

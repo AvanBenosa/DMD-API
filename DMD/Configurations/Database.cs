@@ -62,7 +62,7 @@ namespace DMD.API.Configurations
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             adminUser ??= await userManager.FindByNameAsync(adminEmail);
 
-            if (adminUser == null)
+            if (adminUser == null)  
             {
                 adminUser = new UserProfile
                 {

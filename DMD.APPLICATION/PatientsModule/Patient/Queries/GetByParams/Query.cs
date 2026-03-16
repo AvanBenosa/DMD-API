@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DMD.APPLICATION.PatientsModule.Patient.Models;
 using DMD.APPLICATION.Responses;
 using DMD.PERSISTENCE.Context;
@@ -30,7 +31,6 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Queries.GetByParams
         {
             try
             {
-
                 var response = new PatientResponseModel
                 {
                     Items = new List<PatientModel>(),
@@ -38,17 +38,12 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Queries.GetByParams
                     PageStart = request.PageStart
                 };
 
-                var items = await dbContext.PatientInfos.AsNoTracking()
+                var items = await dbContext.PatientInfos
+                    .AsNoTracking()
+                    .ProjectTo<PatientModel>(mapper.ConfigurationProvider)
                     .ToListAsync();
 
-                if (items.Any())
-                {
-                    items.ForEach(x =>
-                    {
-                        var item = mapper.Map<PatientModel>(x);
-                        response.Items.Add(item);
-                    });
-                }
+                response.Items = items;
 
                 return new SuccessResponse<PatientResponseModel>(response);
 
