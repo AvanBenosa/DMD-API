@@ -12,8 +12,13 @@ namespace DMD.API.Controllers.Patient
 {
     public class UploadProfilePictureRequest
     {
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
         public string? OldFilePath { get; set; }
+    }
+
+    public class UploadPatientExcelRequest
+    {
+        public IFormFile? File { get; set; }
     }
 
     [Route("api/dmd/patient")]
@@ -117,6 +122,35 @@ namespace DMD.API.Controllers.Patient
                 FileName = generatedFileName,
                 FilePath = $"/uploads/patients/{generatedFileName}"
             });
+        }
+
+        [HttpPost("upload-patient-xlsx")]
+        [Description("Upload patient xlsx file and import patient records")]
+        [ProducesResponseType(typeof(PatientUploadResultModel), (int)HttpStatusCode.OK)]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(20_000_000)]
+        public async Task<IActionResult> UploadPatientXlsx([FromForm] UploadPatientExcelRequest request)
+        {
+            var file = request?.File;
+
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            await using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+
+            var command = new Commands.Upload.Command
+            {
+                FileName = file.FileName,
+                FileContent = memoryStream.ToArray(),
+            };
+
+            var result = await Mediator.Send(command);
+            if (result is BadRequestResponse)
+                return BadRequest(result.Message);
+
+            var data = ((SuccessResponse<PatientUploadResultModel>)result).Data;
+            return Ok(data);
         }
 
         private static void DeleteOldProfilePictureIfOwned(string? oldFilePath, string uploadsFolder)
