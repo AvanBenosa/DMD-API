@@ -28,7 +28,5 @@ namespace DMD.PERSISTENCE.Context
         public DbSet<PatientTeethSurface> PatientTeethSurface { get; set; }
 
         public DbSet<AppointmentRequest> AppointmentRequests { get; set; }
-
-        public DbSet<AppointmentRemarks> AppointmentRemarks { get; set;  }
     }
 }

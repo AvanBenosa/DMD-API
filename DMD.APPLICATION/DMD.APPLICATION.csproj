@@ -23,8 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Auth\Queries\" />
-    <Folder Include="Clinic\Employees\Command\" />
-    <Folder Include="Clinic\Employees\Queries\" />
+    <Folder Include="Appointment\" />
     <Folder Include="PatientsModule\PatientForm\Commands\" />
   </ItemGroup>
 

@@ -152,13 +152,13 @@ namespace DMD.APPLICATION.Dashboard.Queries.GetByParams
         {
             var items = await dbContext.AppointmentRequests
                 .AsNoTracking()
-                .Where(x => x.AppointmentDate >= start && x.AppointmentDate < end)
-                .OrderBy(x => x.AppointmentDate)
+                .Where(x => x.AppointmentDateFrom >= start && x.AppointmentDateFrom < end)
+                .OrderBy(x => x.AppointmentDateFrom)
                 .Take(5)
                 .Select(x => new
                 {
-                    x.AppointmentDate,
-                    x.PatientName,
+                    x.AppointmentDateFrom,
+                    x.PatientInfoId,
                     x.ReasonForVisit,
                     x.Status
                 })
@@ -167,8 +167,8 @@ namespace DMD.APPLICATION.Dashboard.Queries.GetByParams
             return items
                 .Select(x => new DashboardAppointmentModel
                 {
-                    Time = x.AppointmentDate.ToString("hh:mm tt"),
-                    FullName = x.PatientName,
+                    Time = x.AppointmentDateFrom.ToString("hh:mm tt"),
+                    //FullName = x.PatientName,
                     Reason = x.ReasonForVisit,
                     Highlight = x.Status == AppointmentStatus.Scheduled
                 })

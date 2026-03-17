@@ -1,4 +1,5 @@
-﻿using DMD.DOMAIN.Enums;
+﻿using DMD.DOMAIN.Entities.Appointment;
+using DMD.DOMAIN.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,8 @@ namespace DMD.DOMAIN.Entities.Patients
         public List<PatientOverview> Overviews { get; set; } // TODO Delete
 
         public List<PatientProgressNote>ProgressNotes { get; set; }
+
+        public List<AppointmentRequest> AppointmentRequests { get; set; }
 
     }
 }

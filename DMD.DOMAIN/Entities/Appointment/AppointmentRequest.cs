@@ -6,14 +6,12 @@ namespace DMD.DOMAIN.Entities.Appointment
 {
     public class AppointmentRequest : BaseEntity<int>
     {
-        public string PatientName { get;set;  }
+        public string PatientInfoId { get;set;  }
+        public DateTime AppointmentDateFrom { get; set; }
 
-        public int PatientId { get; set;  }
-        public DateTime AppointmentDate { get; set; }
+        public DateTime AppointmentDateTo { get; set; }
         public string ReasonForVisit { get; set; }
-        public int DoctorId { get; set; }
-        public string Dentist { get; set; }
         public AppointmentStatus Status { get; set; }
-        public List<AppointmentRemarks> Remarks { get; set;  }
+        public string Remarks { get; set; }
     }
 }
