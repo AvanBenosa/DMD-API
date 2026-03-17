@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DMD.APPLICATION.PatientsModule.PatientOverview.Models;
+using DMD.APPLICATION.PatientsModule.PatientProgressNotes.Models;
 using DMD.APPLICATION.Responses;
 using DMD.PERSISTENCE.Context;
 using MediatR;
@@ -28,22 +28,22 @@ namespace DMD.APPLICATION.PatientsModule.PatientOverview.Queries.GetByParams
         {
             try
             {
-                var response = new List<PatientOverviewModel>();
-                var items = await dbContext.PatientOverviews.AsNoTracking()
+                var response = new List<PatientProgressNoteModel>();
+                var items = await dbContext.PatientProgressNotes.AsNoTracking()
                     .Where(x => x.PatientInfoId == request.PatientInfoId)
-                    .Select(x => mapper.Map<PatientOverviewModel>(x))
+                    .Select(x => mapper.Map<PatientProgressNoteModel>(x))
                     .ToListAsync();
 
                 if (items.Any())
                 {
                     items.ForEach(x =>
                     {
-                        var item = mapper.Map<PatientOverviewModel>(x);
+                        var item = mapper.Map<PatientProgressNoteModel>(x);
                         response.Add(item);
                     });
                 }
 
-                return new SuccessResponse<List<PatientOverviewModel>>(response);
+                return new SuccessResponse<List<PatientProgressNoteModel>>(response);
 
             }
             catch (Exception error)

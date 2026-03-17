@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using DMD.APPLICATION.PatientsModule.Patient.Models;
-using DMD.APPLICATION.PatientsModule.PatientMedicalHistory.Model;
+using DMD.APPLICATION.PatientsModule.PatientOverview.Models;
 using DMD.APPLICATION.PatientsModule.PatientProgressNotes.Models;
 using DMD.APPLICATION.Responses;
 using DMD.PERSISTENCE.Context;
@@ -8,12 +7,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
 
-namespace DMD.APPLICATION.PatientsModule.PatientMedicalHistory.Queries.GetByParams
+namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Queries.GetByParams
 {
     [JsonSchema("GetByParamQuery")]
     public class Query : IRequest<Response>
     {
-
+        public int Id { get; set;  }
         public int PatientInfoId { get; set; }
     }
     public class QueryHandler : IRequestHandler<Query, Response>
@@ -22,7 +21,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientMedicalHistory.Queries.GetByPara
         private readonly DmdDbContext dbContext;
 
         public QueryHandler(DmdDbContext dbContext, IMapper mapper)
-        {
+        {   
             this.mapper = mapper;
             this.dbContext = dbContext;
         }
@@ -30,22 +29,22 @@ namespace DMD.APPLICATION.PatientsModule.PatientMedicalHistory.Queries.GetByPara
         {
             try
             {
-                var response = new List<PatientMedicalHistoryModel>();
-                var items = await dbContext.PatientMedicalHistories.AsNoTracking()
+                var response = new List<PatientProgressNoteModel>();
+                var items = await dbContext.PatientProgressNotes.AsNoTracking()
                     .Where(x => x.PatientInfoId == request.PatientInfoId)
-                    .Select(x => mapper.Map<PatientMedicalHistoryModel>(x))
+                    .Select(x => mapper.Map<PatientProgressNoteModel>(x))
                     .ToListAsync();
 
                 if (items.Any())
                 {
                     items.ForEach(x =>
                     {
-                        var item = mapper.Map<PatientMedicalHistoryModel>(x);
+                        var item = mapper.Map<PatientProgressNoteModel>(x);
                         response.Add(item);
                     });
                 }
 
-                return new SuccessResponse<List<PatientMedicalHistoryModel>>(response);
+                return new SuccessResponse<List<PatientProgressNoteModel>>(response);
 
             }
             catch (Exception error)

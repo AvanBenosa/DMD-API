@@ -3,8 +3,13 @@ using DMD.PERSISTENCE.Context;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DMD.APPLICATION.PatientsModule.PatientMedicalHistory.Commands.Delete
+namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Delete
 {
     [JsonSchema("DeleteCommand")]
     public class Command : IRequest<Response>
@@ -26,12 +31,12 @@ namespace DMD.APPLICATION.PatientsModule.PatientMedicalHistory.Commands.Delete
         {
             try
             {
-                var item = await dbContext.PatientMedicalHistories
+                var item = await dbContext.PatientProgressNotes
                     .FirstOrDefaultAsync(x => x.Id == request.Id && x.PatientInfoId == request.PatientInfoId);
 
                 if (item == null) return new BadRequestResponse("Item may have been modified or removed.");
 
-                dbContext.PatientMedicalHistories.Remove(item);
+                dbContext.PatientProgressNotes.Remove(item);
                 await dbContext.SaveChangesAsync();
 
                 return new SuccessResponse<bool>(true);

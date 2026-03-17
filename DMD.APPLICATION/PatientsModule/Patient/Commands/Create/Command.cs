@@ -5,6 +5,7 @@ using DMD.DOMAIN.Entities.Patients;
 using DMD.DOMAIN.Enums;
 using DMD.PERSISTENCE.Context;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
 
 namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
@@ -42,9 +43,17 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
         {
             try
             {
+                var today = DateTime.Today;
+
+                var countToday = await dbContext.PatientInfos
+                    .CountAsync(p => p.CreatedAt.Date == today);
+
+                var sequence = countToday + 1;
+
+                var patientNumber = $"DMD-{today:yyyyMMdd}-{sequence:D4}";
                 var newItem = new PatientInfo
                 {
-                    PatientNumber = request.PatientNumber,
+                    PatientNumber = patientNumber,
                     FirstName =request.FirstName,
                     LastName = request.LastName,
                     MiddleName = request.MiddleName,

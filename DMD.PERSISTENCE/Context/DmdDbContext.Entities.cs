@@ -12,7 +12,9 @@ namespace DMD.PERSISTENCE.Context
 
         public DbSet<PatientInfo> PatientInfos { get;set;  }
 
-        public DbSet<PatientOverview> PatientOverviews { get;set; }
+        public DbSet<PatientOverview> PatientOverviews { get;set; } //TODO DELETE IF NOT NEEDED
+
+        public DbSet<PatientProgressNote> PatientProgressNotes { get; set; }
 
         public DbSet<PatientMedicalHistory> PatientMedicalHistories { get;set;  }
 

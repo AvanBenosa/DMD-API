@@ -1,6 +1,7 @@
 ﻿using DMD.APPLICATION.PatientsModule.Patient.Models;
 using DMD.APPLICATION.PatientsModule.PatientEmergencyContact.Model;
 using DMD.APPLICATION.PatientsModule.PatientOverview.Models;
+using DMD.APPLICATION.PatientsModule.PatientProgressNotes.Models;
 using DMD.APPLICATION.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -14,53 +15,54 @@ namespace DMD.API.Controllers.Patient
     {
         [HttpGet("get-patient-overview")]
         [Description("Query return Patient OverView model")]
-        [ProducesResponseType(typeof(List<PatientOverviewModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<PatientProgressNoteModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPatientOverview([FromQuery] Queries.GetByParams.Query query)
         {
             var result = await Mediator.Send(query);
             if (result is BadRequestResponse)
                 return BadRequest(result.Message);
 
-            var data = ((SuccessResponse<List<PatientOverviewModel>>)result).Data;
+            var data = ((SuccessResponse<List<PatientProgressNoteModel>>)result).Data;
             return Ok(data);
         }
 
-        [HttpPost("create-patient-overview")]
-        [Description("Create Patient OverView based on json body")]
-        [ProducesResponseType(typeof(PatientOverviewModel), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreatePatientOverview([FromBody] Commands.Create.Command command)
-        {
-            var result = await Mediator.Send(command);
-            if (result is BadRequestResponse)
-                return BadRequest(result.Message);
-            var data = ((SuccessResponse<PatientOverviewModel>)result).Data;
-            return Created("", data);
-        }
+        //TODO DELETE IF NOT NEEDED
+        //[HttpPost("create-patient-overview")]
+        //[Description("Create Patient OverView based on json body")]
+        //[ProducesResponseType(typeof(PatientOverviewModel), (int)HttpStatusCode.Created)]
+        //public async Task<IActionResult> CreatePatientOverview([FromBody] Commands.Create.Command command)
+        //{
+        //    var result = await Mediator.Send(command);
+        //    if (result is BadRequestResponse)
+        //        return BadRequest(result.Message);
+        //    var data = ((SuccessResponse<PatientOverviewModel>)result).Data;
+        //    return Created("", data);
+        //}
 
-        [HttpPut("put-patient-overview")]
-        [Description("Update Patient OverView based on param ID and json data")]
-        [ProducesResponseType(typeof(PatientOverviewModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdatePatientOverview([FromBody] Commands.Delete.Command command)
-        {
-            var result = await Mediator.Send(command);
-            if (result is BadRequestResponse)
-                return BadRequest(result.Message);
+        //[HttpPut("put-patient-overview")]
+        //[Description("Update Patient OverView based on param ID and json data")]
+        //[ProducesResponseType(typeof(PatientOverviewModel), (int)HttpStatusCode.OK)]
+        //public async Task<IActionResult> UpdatePatientOverview([FromBody] Commands.Delete.Command command)
+        //{
+        //    var result = await Mediator.Send(command);
+        //    if (result is BadRequestResponse)
+        //        return BadRequest(result.Message);
 
-            var data = ((SuccessResponse<PatientOverviewModel>)result).Data;
-            return Ok(data);
-        }
+        //    var data = ((SuccessResponse<PatientOverviewModel>)result).Data;
+        //    return Ok(data);
+        //}
 
-        [HttpDelete("delete-patient-overview")]
-        [Description("Delete Patient OverView, returns boolean")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> DeletePatientOverview([FromBody] Commands.Delete.Command command)
-        {
-            var result = await Mediator.Send(command);
-            if (result is BadRequestResponse)
-                return BadRequest(result.Message);
+        //[HttpDelete("delete-patient-overview")]
+        //[Description("Delete Patient OverView, returns boolean")]
+        //[ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        //public async Task<IActionResult> DeletePatientOverview([FromBody] Commands.Delete.Command command)
+        //{
+        //    var result = await Mediator.Send(command);
+        //    if (result is BadRequestResponse)
+        //        return BadRequest(result.Message);
 
-            var data = ((SuccessResponse<bool>)result).Data;
-            return Ok(data);
-        }
+        //    var data = ((SuccessResponse<bool>)result).Data;
+        //    return Ok(data);
+        //}
     }
 }
