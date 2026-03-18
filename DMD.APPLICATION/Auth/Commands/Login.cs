@@ -76,17 +76,26 @@ namespace DMD.APPLICATION.Auth.Commands
                 }
 
                 var clinicName = string.Empty;
+                var isDataPrivacyAccepted = false;
                 if (user.ClinicId.HasValue)
                 {
                     var facility = await dbContext.ClinicProfiles.AsNoTracking()
                         .Where(x => x.Id == user.ClinicId)
-                        .Select(x => new {x.ClinicName})
+                        .Select(x => new { x.ClinicName, x.IsDataPrivacyAccepted })
                         .FirstOrDefaultAsync();
 
-                    if(facility != null) clinicName = facility.ClinicName;
+                    if (facility != null)
+                    {
+                        clinicName = facility.ClinicName;
+                        isDataPrivacyAccepted = facility.IsDataPrivacyAccepted;
+                    }
                 }
 
-                var authResponse = AuthResponseFactory.Create(user, configuration, clinicName);
+                var authResponse = AuthResponseFactory.Create(
+                    user,
+                    configuration,
+                    clinicName,
+                    isDataPrivacyAccepted);
 
                 return new SuccessResponse<LoginAuthResponse>(authResponse);
             }

@@ -86,7 +86,8 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Create
                     ClinicName = item.ClinicName,
                     Address = item.Address,
                     EmailAddress = item.EmailAddress,
-                    ContactNumber = item.ContactNumber
+                    ContactNumber = item.ContactNumber,
+                    IsDataPrivacyAccepted = item.IsDataPrivacyAccepted
                 });
             }
             catch (Exception error)

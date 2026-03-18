@@ -157,7 +157,11 @@ namespace DMD.APPLICATION.Auth.Commands.RegisterClinic
                 await dbContext.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
 
-                var response = AuthResponseFactory.Create(user, configuration, clinic.ClinicName);
+                var response = AuthResponseFactory.Create(
+                    user,
+                    configuration,
+                    clinic.ClinicName,
+                    clinic.IsDataPrivacyAccepted);
                 response.RequiresRegistration = false;
 
                 return new SuccessResponse<RegisterAuthResponse>(response);

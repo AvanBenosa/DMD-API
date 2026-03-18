@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Net;
 
 using ClinicCommands = DMD.APPLICATION.ClinicProfiles.Commands;
+using ClinicModels = DMD.APPLICATION.ClinicProfiles.Models;
+using ClinicQueries = DMD.APPLICATION.ClinicProfiles.Queries;
 
 namespace DMD.API.Controllers.Clinic
 {
@@ -27,6 +29,46 @@ namespace DMD.API.Controllers.Clinic
 
             var data = ((SuccessResponse<ClinicProfileModel>)result).Data;
             return Created("", data);
+        }
+
+        [HttpGet("data-privacy-status")]
+        [Description("Get current clinic data privacy acceptance status")]
+        [ProducesResponseType(typeof(ClinicModels.DataPrivacyStatusModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetDataPrivacyStatus()
+        {
+            var result = await Mediator.Send(new ClinicQueries.GetDataPrivacyStatus.Query());
+            if (result is NotFoundResponse)
+            {
+                return NotFound(result.Message);
+            }
+
+            if (result is BadRequestResponse)
+            {
+                return BadRequest(result.Message);
+            }
+
+            var data = ((SuccessResponse<ClinicModels.DataPrivacyStatusModel>)result).Data;
+            return Ok(data);
+        }
+
+        [HttpPost("accept-data-privacy")]
+        [Description("Accept data privacy for the current clinic")]
+        [ProducesResponseType(typeof(ClinicModels.DataPrivacyStatusModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> AcceptDataPrivacy()
+        {
+            var result = await Mediator.Send(new ClinicCommands.AcceptDataPrivacy.Command());
+            if (result is NotFoundResponse)
+            {
+                return NotFound(result.Message);
+            }
+
+            if (result is BadRequestResponse)
+            {
+                return BadRequest(result.Message);
+            }
+
+            var data = ((SuccessResponse<ClinicModels.DataPrivacyStatusModel>)result).Data;
+            return Ok(data);
         }
     }
 }

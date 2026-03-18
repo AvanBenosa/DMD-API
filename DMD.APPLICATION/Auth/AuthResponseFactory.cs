@@ -29,7 +29,8 @@ namespace DMD.APPLICATION.Auth
         internal static AuthResponse Create(
             UserProfile user,
             IConfiguration configuration,
-            string? clinicName = null)
+            string? clinicName = null,
+            bool isDataPrivacyAccepted = false)
         {
             return new AuthResponse
             {
@@ -47,6 +48,7 @@ namespace DMD.APPLICATION.Auth
                     ClinicName = clinicName?.Trim() ?? string.Empty,
                     Role = user.Role.ToString().ToLowerInvariant(),
                     RoleLabel = user.RoleLabel,
+                    IsDataPrivacyAccepted = isDataPrivacyAccepted,
                     ContactNumber = user.ContactNumber,
                     CreatedAt = DateTime.UtcNow.ToString("O"),
                 }

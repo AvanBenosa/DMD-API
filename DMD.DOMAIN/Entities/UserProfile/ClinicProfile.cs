@@ -8,6 +8,7 @@ namespace DMD.DOMAIN.Entities.UserProfile
         public string Address { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
         public string ContactNumber { get; set; } = string.Empty;
+        public bool IsDataPrivacyAccepted { get; set; }
         public List<PatientInfo> Patients { get; set; } = new();
     }
 }
