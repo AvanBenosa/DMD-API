@@ -10,6 +10,7 @@ namespace DMD.PERSISTENCE.Context
     {
         public DbSet<UserProfile> UserProfiles { get;set; }
         public DbSet<ClinicProfile> ClinicProfiles { get; set; }
+        public DbSet<ClinicRegistrationVerification> ClinicRegistrationVerifications { get; set; }
 
         public DbSet<PatientInfo> PatientInfos { get;set;  }
 

@@ -12,7 +12,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Queries.GetByParams
     [JsonSchema("GetByParamQuery")]
     public class Query : IRequest<Response>
     {
-        public string ClinicId { get; set; }
+        public int ClinicId { get; set; }
         public string Que { get; set; }
         public int PageStart { get; set; }
         public int PageEnd { get; set; }
@@ -40,6 +40,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Queries.GetByParams
 
                 var items = await dbContext.PatientInfos
                     .AsNoTracking()
+                    .Where(x => x.ClinicProfileId == request.ClinicId)
                     .ProjectTo<PatientModel>(mapper.ConfigurationProvider)
                     .ToListAsync();
 

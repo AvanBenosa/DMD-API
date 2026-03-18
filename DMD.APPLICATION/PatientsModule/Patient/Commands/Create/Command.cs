@@ -5,8 +5,10 @@ using DMD.DOMAIN.Entities.Patients;
 using DMD.DOMAIN.Enums;
 using DMD.PERSISTENCE.Context;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
+using System.Security.Claims;
 
 namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
 {
@@ -33,16 +35,24 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
     {
         private readonly DmdDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public CommandHandler(DmdDbContext dbContext, IMapper mapper)
+        public CommandHandler(DmdDbContext dbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.mapper = mapper;
             this.dbContext = dbContext;
+            this.httpContextAccessor = httpContextAccessor;
         }
         public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
         {
             try
             {
+                var clinicIdValue = httpContextAccessor.HttpContext?.User.FindFirstValue("clinicId");
+                if (!int.TryParse(clinicIdValue, out var clinicId))
+                {
+                    return new BadRequestResponse("Clinic registration must be completed before creating patients.");
+                }
+
                 var today = DateTime.Today;
 
                 var countToday = await dbContext.PatientInfos
@@ -53,7 +63,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
                 var patientNumber = $"DMD-{today:yyyyMMdd}-{sequence:D4}";
                 var newItem = new PatientInfo
                 {
-                    ClinicProfileId = request.ClinicProfileId,
+                    ClinicProfileId = clinicId,
                     PatientNumber = patientNumber,
                     FirstName =request.FirstName,
                     LastName = request.LastName,

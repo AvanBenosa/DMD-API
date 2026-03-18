@@ -91,7 +91,8 @@ namespace DMD.APPLICATION.Auth
                 new(ClaimTypes.Email, email),
                 new(ClaimTypes.Role, user.Role.ToString()),
                 new("firstName", user.FirstName ?? string.Empty),
-                new("lastName", user.LastName ?? string.Empty)
+                new("lastName", user.LastName ?? string.Empty),
+                new("clinicId", user.ClinicId?.ToString() ?? string.Empty)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor

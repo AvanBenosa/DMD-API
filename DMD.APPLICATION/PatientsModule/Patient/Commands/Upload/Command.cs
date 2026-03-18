@@ -5,10 +5,12 @@ using DMD.DOMAIN.Entities.Patients;
 using DMD.DOMAIN.Enums;
 using DMD.PERSISTENCE.Context;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NJsonSchema.Annotations;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.Security.Claims;
 using System.Text;
 
 namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Upload
@@ -40,10 +42,12 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Upload
         ];
 
         private readonly DmdDbContext dbContext;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public CommandHandler(DmdDbContext dbContext)
+        public CommandHandler(DmdDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             this.dbContext = dbContext;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -53,6 +57,12 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Upload
                 if (request.FileContent.Length == 0)
                 {
                     return new BadRequestResponse("No file uploaded.");
+                }
+
+                var clinicIdValue = httpContextAccessor.HttpContext?.User.FindFirstValue("clinicId");
+                if (!int.TryParse(clinicIdValue, out var clinicId))
+                {
+                    return new BadRequestResponse("Clinic registration must be completed before importing patients.");
                 }
 
                 var extension = Path.GetExtension(request.FileName).ToLowerInvariant();
@@ -216,6 +226,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Upload
                         sequence++;
                         return new PatientInfo
                         {
+                            ClinicProfileId = clinicId,
                             PatientNumber = $"DMD-{today:yyyyMMdd}-{sequence:D4}",
                             FirstName = row.FirstName,
                             LastName = row.LastName,

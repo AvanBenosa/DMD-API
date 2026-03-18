@@ -46,6 +46,12 @@
         public bool RequiresRegistration { get; set; }
     }
 
+    public class VerificationCodeResponse
+    {
+        public string Email { get; set; } = string.Empty;
+        public int ExpiresInMinutes { get; set; }
+    }
+
     public class ChangePasswordRequest
     {
         public string CurrentPassword { get; set; } = string.Empty;

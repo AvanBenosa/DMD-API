@@ -75,13 +75,15 @@ namespace DMD.APPLICATION.Auth.Commands
                     return new BadRequestResponse("Account is inactive");
                 }
 
-                string? clinicName = null;
+                var clinicName = string.Empty;
                 if (user.ClinicId.HasValue)
                 {
-                    clinicName = await dbContext.ClinicProfiles
-                        .Where(item => item.Id == user.ClinicId.Value)
-                        .Select(item => item.ClinicName)
-                        .FirstOrDefaultAsync(cancellationToken);
+                    var facility = await dbContext.ClinicProfiles.AsNoTracking()
+                        .Where(x => x.Id == user.ClinicId)
+                        .Select(x => new {x.ClinicName})
+                        .FirstOrDefaultAsync();
+
+                    if(facility != null) clinicName = facility.ClinicName;
                 }
 
                 var authResponse = AuthResponseFactory.Create(user, configuration, clinicName);

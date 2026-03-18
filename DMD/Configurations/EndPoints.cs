@@ -36,12 +36,6 @@ namespace DMD.API.Configurations
         internal static void ConfigureEndpoints(WebApplication app)
         {
             _ = app.UseRouting();
-            _ = app.UseAuthorization();
-            _ = app.UseAuthentication();
-            _ = app.UseEndpoints(endpoints =>
-            {
-                _ = endpoints.MapControllers();
-            });
         }
     }
 }

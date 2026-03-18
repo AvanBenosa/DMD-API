@@ -90,26 +90,16 @@ namespace DMD.PERSISTENCE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PatientInfos",
+                name: "ClinicRegistrationVerifications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Suffix = table.Column<int>(type: "int", nullable: false),
-                    Occupation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BloodType = table.Column<int>(type: "int", nullable: false),
-                    CivilStatus = table.Column<int>(type: "int", nullable: false),
-                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tag = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiresAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ConsumedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastSentAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -120,7 +110,7 @@ namespace DMD.PERSISTENCE.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PatientInfos", x => x.Id);
+                    table.PrimaryKey("PK_ClinicRegistrationVerifications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,6 +238,76 @@ namespace DMD.PERSISTENCE.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PatientInfos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClinicProfileId = table.Column<int>(type: "int", nullable: false),
+                    PatientNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Suffix = table.Column<int>(type: "int", nullable: false),
+                    Occupation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BloodType = table.Column<int>(type: "int", nullable: false),
+                    CivilStatus = table.Column<int>(type: "int", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Tag = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PatientInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PatientInfos_ClinicProfiles_ClinicProfileId",
+                        column: x => x.ClinicProfileId,
+                        principalTable: "ClinicProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PatientTeethSurface",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientTeethId = table.Column<int>(type: "int", nullable: false),
+                    Surface = table.Column<int>(type: "int", nullable: false),
+                    TeethSurfaceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Remarks = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PatientTeethSurface", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PatientTeethSurface_PatientTeeth_PatientTeethId",
+                        column: x => x.PatientTeethId,
+                        principalTable: "PatientTeeth",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -486,35 +546,6 @@ namespace DMD.PERSISTENCE.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "PatientTeethSurface",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientTeethId = table.Column<int>(type: "int", nullable: false),
-                    Surface = table.Column<int>(type: "int", nullable: false),
-                    TeethSurfaceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Remarks = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PatientTeethSurface", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PatientTeethSurface_PatientTeeth_PatientTeethId",
-                        column: x => x.PatientTeethId,
-                        principalTable: "PatientTeeth",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AppointmentRequests_PatientInfoId1",
                 table: "AppointmentRequests",
@@ -570,6 +601,11 @@ namespace DMD.PERSISTENCE.Migrations
                 column: "PatientInfoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PatientInfos_ClinicProfileId",
+                table: "PatientInfos",
+                column: "ClinicProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PatientMedicalHistories_PatientInfoId",
                 table: "PatientMedicalHistories",
                 column: "PatientInfoId");
@@ -618,7 +654,7 @@ namespace DMD.PERSISTENCE.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ClinicProfiles");
+                name: "ClinicRegistrationVerifications");
 
             migrationBuilder.DropTable(
                 name: "PatientEmergencyContacts");
@@ -652,6 +688,9 @@ namespace DMD.PERSISTENCE.Migrations
 
             migrationBuilder.DropTable(
                 name: "PatientInfos");
+
+            migrationBuilder.DropTable(
+                name: "ClinicProfiles");
         }
     }
 }
