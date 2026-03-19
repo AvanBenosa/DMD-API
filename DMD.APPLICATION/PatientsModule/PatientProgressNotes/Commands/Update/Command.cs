@@ -15,6 +15,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Update
     {
         public string Id { get; set; } = string.Empty;
         public string PatientInfoId { get; set; } = string.Empty;
+        public string AssignedDoctor { get; set; }
         public DateTime? Date { get; set; }
         public string Procedure { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
@@ -63,6 +64,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Update
                 item.Category = request.Category;
                 item.Account = request.Account;
                 item.Amount = request.Amount;
+                item.AssignedDoctor = request.AssignedDoctor;
 
                 await dbContext.SaveChangesAsync(cancellationToken);
 

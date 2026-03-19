@@ -9,6 +9,7 @@ namespace DMD.DOMAIN.Entities.Patients
     public class PatientProgressNote : BaseEntity<int>
     {
         public int PatientInfoId { get; set; }
+        public string AssignedDoctor { get; set; }
         public DateTime? Date { get; set; }
         public string Procedure { get; set; }
         public string Category { get; set; }

@@ -13,6 +13,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Create
     public class Command : IRequest<Response>
     {
         public string PatientInfoId { get; set; } = string.Empty;
+        public string AssignedDoctor { get; set; }
         public DateTime? Date { get; set; }
         public string Procedure { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
@@ -56,6 +57,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Create
                     Account = request.Account,
                     Discount = request.Discount,
                     AmountPaid = request.AmountPaid,
+                    AssignedDoctor = request.AssignedDoctor,
                 };
 
                 dbContext.PatientProgressNotes.Add(newItem);

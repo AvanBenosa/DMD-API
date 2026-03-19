@@ -156,5 +156,6 @@ namespace DMD.API.Controllers.Patient
             var data = ((SuccessResponse<PatientUploadResultModel>)result).Data;
             return Ok(data);
         }
+
     }
 }
