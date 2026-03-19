@@ -42,21 +42,9 @@ namespace DMD.APPLICATION.Appointment.Queries.GetByParams
                     return new BadRequestResponse("Authenticated clinic was not found.");
                 }
 
-                var appointments = await dbContext.AppointmentRequests
-                    .AsNoTracking()
-                    .OrderByDescending(x => x.AppointmentDateFrom)
-                    .ToListAsync(cancellationToken);
-
-                var patientIds = appointments
-                    .Select(x => x.PatientInfoId)
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .Distinct()
-                    .Select(int.Parse)
-                    .ToList();
-
                 var patients = await dbContext.PatientInfos
                     .AsNoTracking()
-                    .Where(x => x.ClinicProfileId == clinicId.Value && patientIds.Contains(x.Id))
+                    .Where(x => x.ClinicProfileId == clinicId.Value)
                     .Select(x => new
                     {
                         x.Id,
@@ -88,18 +76,24 @@ namespace DMD.APPLICATION.Appointment.Queries.GetByParams
                         };
                     });
 
-                var items = await Task.WhenAll(appointments
+                var clinicPatientIds = patientLookup.Keys.ToList();
+
+                var appointments = await dbContext.AppointmentRequests
+                    .AsNoTracking()
+                    .Where(x => !string.IsNullOrWhiteSpace(x.PatientInfoId) && clinicPatientIds.Contains(x.PatientInfoId))
+                    .OrderByDescending(x => x.AppointmentDateFrom)
+                    .ToListAsync(cancellationToken);
+
+                var appointmentRows = appointments
                     .Where(x => !string.IsNullOrWhiteSpace(x.PatientInfoId) && patientLookup.ContainsKey(x.PatientInfoId))
-                    .Select(async x =>
+                    .Select(x =>
                     {
                         patientLookup.TryGetValue(x.PatientInfoId ?? string.Empty, out var patient);
 
-                        return new AppointmentModel
+                        return new
                         {
-                            Id = await protectionProvider.EncryptIntIdAsync(x.Id, ProtectedIdPurpose.Appointment),
-                            PatientInfoId = await protectionProvider.EncryptIntIdAsync(int.Parse(x.PatientInfoId ?? "0"), ProtectedIdPurpose.Patient),
-                            AppointmentDateFrom = x.AppointmentDateFrom,
-                            AppointmentDateTo = x.AppointmentDateTo,
+                            Appointment = x,
+                            PatientInfoId = x.PatientInfoId ?? string.Empty,
                             ReasonForVisit = x.ReasonForVisit ?? string.Empty,
                             Status = x.Status.ToString(),
                             Remarks = x.Remarks ?? string.Empty,
@@ -107,14 +101,62 @@ namespace DMD.APPLICATION.Appointment.Queries.GetByParams
                             PatientName = patient?.PatientName ?? string.Empty,
                             PatientNumber = patient?.PatientNumber ?? string.Empty
                         };
-                    }));
+                    })
+                    .ToList();
+
+                var keyword = request.Que?.Trim();
+                if (!string.IsNullOrWhiteSpace(keyword) && !string.Equals(keyword, "all", StringComparison.OrdinalIgnoreCase))
+                {
+                    var normalizedKeyword = keyword.ToLower();
+                    appointmentRows = appointmentRows
+                        .Where(x =>
+                            (x.PatientName ?? string.Empty).ToLower().Contains(normalizedKeyword) ||
+                            (x.PatientNumber ?? string.Empty).ToLower().Contains(normalizedKeyword) ||
+                            (x.ReasonForVisit ?? string.Empty).ToLower().Contains(normalizedKeyword) ||
+                            (x.Status ?? string.Empty).ToLower().Contains(normalizedKeyword) ||
+                            (x.AppointmentType ?? string.Empty).ToLower().Contains(normalizedKeyword) ||
+                            (x.Remarks ?? string.Empty).ToLower().Contains(normalizedKeyword))
+                        .ToList();
+                }
+
+                var totalCount = appointmentRows.Count;
+                var pageStart = Math.Max(request.PageStart, 0);
+                var pageSize = request.PageEnd > 0 ? request.PageEnd : 25;
+
+                var pagedRows = appointmentRows
+                    .Skip(pageStart)
+                    .Take(pageSize)
+                    .ToList();
+
+                var items = await Task.WhenAll(pagedRows.Select(async x =>
+                {
+                    var patientInfoId = int.TryParse(x.PatientInfoId, out var parsedPatientInfoId)
+                        ? parsedPatientInfoId
+                        : 0;
+
+                    return new AppointmentModel
+                    {
+                        Id = await protectionProvider.EncryptIntIdAsync(x.Appointment.Id, ProtectedIdPurpose.Appointment),
+                        PatientInfoId = patientInfoId > 0
+                            ? await protectionProvider.EncryptIntIdAsync(patientInfoId, ProtectedIdPurpose.Patient)
+                            : string.Empty,
+                        AppointmentDateFrom = x.Appointment.AppointmentDateFrom,
+                        AppointmentDateTo = x.Appointment.AppointmentDateTo,
+                        ReasonForVisit = x.ReasonForVisit,
+                        Status = x.Status,
+                        Remarks = x.Remarks,
+                        AppointmentType = x.AppointmentType,
+                        PatientName = x.PatientName,
+                        PatientNumber = x.PatientNumber
+                    };
+                }));
 
                 var response = new AppointmentResponseModel
                 {
                     Items = items.ToList(),
-                    PageStart = request.PageStart,
-                    PageEnd = request.PageEnd,
-                    TotalCount = items.Length
+                    PageStart = pageStart,
+                    PageEnd = pageSize,
+                    TotalCount = totalCount
                 };
 
                 return new SuccessResponse<AppointmentResponseModel>(response);
