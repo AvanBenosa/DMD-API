@@ -16,6 +16,7 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Update
     {
         public string Id { get; set; } = string.Empty;
         public string ClinicName { get; set; } = string.Empty;
+        public string BannerImagePath { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
         public string ContactNumber { get; set; } = string.Empty;
@@ -70,6 +71,7 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Update
                 }
 
                 item.ClinicName = request.ClinicName.Trim();
+                item.BannerImagePath = request.BannerImagePath.Trim();
                 item.Address = request.Address.Trim();
                 item.EmailAddress = request.EmailAddress.Trim();
                 item.ContactNumber = request.ContactNumber.Trim();
@@ -86,6 +88,8 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Update
                 {
                     Id = await protectionProvider.EncryptIntIdAsync(item.Id, ProtectedIdPurpose.Clinic),
                     ClinicName = item.ClinicName,
+                    BannerImagePath = item.BannerImagePath,
+                    QrCodeValue = await protectionProvider.EncryptIntIdAsync(item.Id, ProtectedIdPurpose.Clinic),
                     Address = item.Address,
                     EmailAddress = item.EmailAddress,
                     ContactNumber = item.ContactNumber,

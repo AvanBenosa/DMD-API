@@ -4,6 +4,8 @@ namespace DMD.APPLICATION.ClinicProfiles.Models
     {
         public string Id { get; set; } = string.Empty;
         public string ClinicName { get; set; } = string.Empty;
+        public string BannerImagePath { get; set; } = string.Empty;
+        public string QrCodeValue { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
         public string ContactNumber { get; set; } = string.Empty;

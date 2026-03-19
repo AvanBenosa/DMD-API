@@ -51,6 +51,7 @@ UseSwagger(app);
 
 var uploadsRoot = Path.Combine(app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot"), "uploads");
 Directory.CreateDirectory(Path.Combine(uploadsRoot, "patients"));
+Directory.CreateDirectory(Path.Combine(uploadsRoot, "clinics"));
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions

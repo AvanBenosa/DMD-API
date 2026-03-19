@@ -65,6 +65,8 @@ namespace DMD.APPLICATION.ClinicProfiles.Queries.GetCurrent
                     {
                         Id = await protectionProvider.EncryptIntIdAsync(clinic.Id, ProtectedIdPurpose.Clinic),
                         ClinicName = clinic.ClinicName,
+                        BannerImagePath = clinic.BannerImagePath,
+                        QrCodeValue = await protectionProvider.EncryptIntIdAsync(clinic.Id, ProtectedIdPurpose.Clinic),
                         Address = clinic.Address,
                         EmailAddress = clinic.EmailAddress,
                         ContactNumber = clinic.ContactNumber,
