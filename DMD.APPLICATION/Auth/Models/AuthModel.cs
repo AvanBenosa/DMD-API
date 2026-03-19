@@ -86,6 +86,7 @@
         public string? ContactNumber { get; set; }
         public string CreatedAt { get; set; } = string.Empty;
         public string? UpdatedAt { get; set; }
+        public string PortalType { get; set; } = "clinic";
 
     }
 

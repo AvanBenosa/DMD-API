@@ -17,6 +17,11 @@ namespace DMD.APPLICATION.Auth
 
         internal static bool IsBootstrapSeedUser(UserProfile user, IConfiguration configuration)
         {
+            if (user.Role == DMD.DOMAIN.Enums.UserRole.SuperAdmin && !user.ClinicId.HasValue)
+            {
+                return true;
+            }
+
             var seedEmail = GetSeedAdminEmail(configuration);
             if (string.IsNullOrWhiteSpace(seedEmail))
             {
@@ -36,6 +41,8 @@ namespace DMD.APPLICATION.Auth
             bool isDataPrivacyAccepted = false,
             bool isLocked = false)
         {
+            var portalType = IsBootstrapSeedUser(user, configuration) ? "admin" : "clinic";
+
             return new AuthResponse
             {
                 Token = GenerateJwtToken(user, configuration),
@@ -56,6 +63,7 @@ namespace DMD.APPLICATION.Auth
                     IsLocked = isLocked,
                     ContactNumber = user.ContactNumber,
                     CreatedAt = DateTime.UtcNow.ToString("O"),
+                    PortalType = portalType,
                 }
             };
         }

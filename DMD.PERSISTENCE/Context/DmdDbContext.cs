@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Security.Claims;
+using DMD.DOMAIN.Enums;
 
 namespace DMD.PERSISTENCE.Context
 {
@@ -94,7 +95,11 @@ namespace DMD.PERSISTENCE.Context
         }
 
         private bool ShouldBypassClinicFilter =>
-            _httpContextAccessor?.HttpContext?.User?.Identity?.IsAuthenticated != true;
+            _httpContextAccessor?.HttpContext?.User?.Identity?.IsAuthenticated != true
+            || string.Equals(
+                _httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Role),
+                UserRole.SuperAdmin.ToString(),
+                StringComparison.OrdinalIgnoreCase);
 
         private int? CurrentClinicId
         {
