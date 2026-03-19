@@ -13,6 +13,36 @@ namespace DMD.API.Controllers.Public
     public class PublicRegistrationController : BaseController
     {
         [AllowAnonymous]
+        [HttpPost("request-email-verification-code")]
+        [Description("Send a verification code to a public registration email address")]
+        [ProducesResponseType(typeof(PublicEmailVerificationCodeResponseModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RequestEmailVerificationCode(
+            [FromBody] Commands.RequestEmailVerificationCode.Command command)
+        {
+            var result = await Mediator.Send(command);
+            if (result is BadRequestResponse)
+                return BadRequest(result.Message);
+
+            var data = ((SuccessResponse<PublicEmailVerificationCodeResponseModel>)result).Data;
+            return Ok(data);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("verify-email-verification-code")]
+        [Description("Verify a public registration email verification code")]
+        [ProducesResponseType(typeof(PublicEmailVerificationStatusModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> VerifyEmailVerificationCode(
+            [FromBody] Commands.VerifyEmailVerificationCode.Command command)
+        {
+            var result = await Mediator.Send(command);
+            if (result is BadRequestResponse)
+                return BadRequest(result.Message);
+
+            var data = ((SuccessResponse<PublicEmailVerificationStatusModel>)result).Data;
+            return Ok(data);
+        }
+
+        [AllowAnonymous]
         [HttpGet("clinic")]
         [Description("Get public clinic registration context from QR clinic id")]
         [ProducesResponseType(typeof(PublicClinicRegistrationContextModel), (int)HttpStatusCode.OK)]

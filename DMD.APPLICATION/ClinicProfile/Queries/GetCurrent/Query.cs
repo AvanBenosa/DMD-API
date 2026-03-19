@@ -75,7 +75,13 @@ namespace DMD.APPLICATION.ClinicProfiles.Queries.GetCurrent
                         ClosingTime = clinic.ClosingTime,
                         LunchStartTime = clinic.LunchStartTime,
                         LunchEndTime = clinic.LunchEndTime,
-                        WorkingDays = clinic.WorkingDays
+                        IsMondayOpen = clinic.IsMondayOpen,
+                        IsTuesdayOpen = clinic.IsTuesdayOpen,
+                        IsWednesdayOpen = clinic.IsWednesdayOpen,
+                        IsThursdayOpen = clinic.IsThursdayOpen,
+                        IsFridayOpen = clinic.IsFridayOpen,
+                        IsSaturdayOpen = clinic.IsSaturdayOpen,
+                        IsSundayOpen = clinic.IsSundayOpen,
                     };
 
                 return new SuccessResponse<ClinicProfileModel>(item);

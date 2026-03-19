@@ -25,6 +25,13 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Update
         public string ClosingTime { get; set; } = "18:00";
         public string LunchStartTime { get; set; } = "12:00";
         public string LunchEndTime { get; set; } = "13:00";
+        public bool IsMondayOpen { get; set; } = true;
+        public bool IsTuesdayOpen { get; set; } = true;
+        public bool IsWednesdayOpen { get; set; } = true;
+        public bool IsThursdayOpen { get; set; } = true;
+        public bool IsFridayOpen { get; set; } = true;
+        public bool IsSaturdayOpen { get; set; }
+        public bool IsSundayOpen { get; set; }
         public List<string> WorkingDays { get; set; } = new() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
     }
 
@@ -80,7 +87,13 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Update
                 item.ClosingTime = request.ClosingTime.Trim();
                 item.LunchStartTime = request.LunchStartTime.Trim();
                 item.LunchEndTime = request.LunchEndTime.Trim();
-                item.WorkingDays = request.WorkingDays ?? new List<string>();
+                item.IsMondayOpen = request.IsMondayOpen;
+                item.IsTuesdayOpen = request.IsTuesdayOpen;
+                item.IsWednesdayOpen = request.IsWednesdayOpen;
+                item.IsThursdayOpen = request.IsThursdayOpen;
+                item.IsFridayOpen = request.IsFridayOpen;
+                item.IsSaturdayOpen = request.IsSaturdayOpen;
+                item.IsSundayOpen = request.IsSundayOpen;
 
                 await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -98,7 +111,13 @@ namespace DMD.APPLICATION.ClinicProfiles.Commands.Update
                     ClosingTime = item.ClosingTime,
                     LunchStartTime = item.LunchStartTime,
                     LunchEndTime = item.LunchEndTime,
-                    WorkingDays = item.WorkingDays
+                    IsMondayOpen = item.IsMondayOpen,
+                    IsTuesdayOpen = item.IsTuesdayOpen,
+                    IsWednesdayOpen = item.IsWednesdayOpen,
+                    IsThursdayOpen = item.IsThursdayOpen,
+                    IsFridayOpen = item.IsFridayOpen,
+                    IsSaturdayOpen = item.IsSaturdayOpen,
+                    IsSundayOpen = item.IsSundayOpen,
                 });
             }
             catch (Exception error)

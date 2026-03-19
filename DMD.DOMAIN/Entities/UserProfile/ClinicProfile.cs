@@ -15,7 +15,13 @@ namespace DMD.DOMAIN.Entities.UserProfile
         public string ClosingTime { get; set; } = "18:00";
         public string LunchStartTime { get; set; } = "12:00";
         public string LunchEndTime { get; set; } = "13:00";
-        public List<string> WorkingDays { get; set; } = new() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+        public bool IsMondayOpen { get; set; } = true;
+        public bool IsTuesdayOpen { get; set; } = true;
+        public bool IsWednesdayOpen { get; set; } = true;
+        public bool IsThursdayOpen { get; set; } = true;
+        public bool IsFridayOpen { get; set; } = true;
+        public bool IsSaturdayOpen { get; set; }
+        public bool IsSundayOpen { get; set; }
         public List<PatientInfo> Patients { get; set; } = new();
     }
 }

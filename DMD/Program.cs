@@ -49,14 +49,23 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 var app = builder.Build();
 UseSwagger(app);
 
-var uploadsRoot = Path.Combine(app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot"), "uploads");
-Directory.CreateDirectory(Path.Combine(uploadsRoot, "patients"));
-Directory.CreateDirectory(Path.Combine(uploadsRoot, "clinics"));
+var legacyUploadsRoot = Path.Combine(app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot"), "uploads");
+Directory.CreateDirectory(Path.Combine(legacyUploadsRoot, "patients"));
+Directory.CreateDirectory(Path.Combine(legacyUploadsRoot, "clinics"));
+
+var configuredStorageRoot = builder.Configuration["Storage:RootPath"];
+var storageRoot = string.IsNullOrWhiteSpace(configuredStorageRoot)
+    ? Path.Combine(app.Environment.ContentRootPath, "storage")
+    : Path.IsPathRooted(configuredStorageRoot)
+        ? configuredStorageRoot
+        : Path.Combine(app.Environment.ContentRootPath, configuredStorageRoot);
+
+Directory.CreateDirectory(storageRoot);
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(uploadsRoot),
+    FileProvider = new PhysicalFileProvider(legacyUploadsRoot),
     RequestPath = "/uploads"
 });
 

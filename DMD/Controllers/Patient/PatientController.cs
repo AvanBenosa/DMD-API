@@ -1,9 +1,11 @@
 ﻿using DMD.APPLICATION.PatientsModule.Patient.Models;
 using DMD.APPLICATION.PatientsModule.PatientProfile.Model;
 using DMD.APPLICATION.Responses;
+using DMD.API.Storage;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.Net;
+using System.Security.Claims;
 using Commands = DMD.APPLICATION.PatientsModule.Patient.Commands;
 using Queries = DMD.APPLICATION.PatientsModule.Patient.Queries;
 
@@ -24,11 +26,11 @@ namespace DMD.API.Controllers.Patient
     [Route("api/dmd/patient")]
     public class PatientController : BaseController
     {
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IClinicStorageService clinicStorageService;
 
-        public PatientController(IWebHostEnvironment webHostEnvironment)
+        public PatientController(IClinicStorageService clinicStorageService)
         {
-            this.webHostEnvironment = webHostEnvironment;
+            this.clinicStorageService = clinicStorageService;
         }
 
         [HttpGet("get-patient")]
@@ -100,27 +102,29 @@ namespace DMD.API.Controllers.Patient
             if (!allowedExtensions.Contains(extension))
                 return BadRequest("Invalid file type. Allowed: jpg, jpeg, png, gif, webp.");
 
-            var uploadsFolder = Path.Combine(
-                webHostEnvironment.WebRootPath ?? Path.Combine(webHostEnvironment.ContentRootPath, "wwwroot"),
-                "uploads",
-                "patients");
-
-            Directory.CreateDirectory(uploadsFolder);
-
-            var generatedFileName = $"{Guid.NewGuid():N}{extension}";
-            var physicalPath = Path.Combine(uploadsFolder, generatedFileName);
-
-            await using (var stream = new FileStream(physicalPath, FileMode.Create))
+            var clinicIdValue = User.FindFirstValue("clinicId");
+            if (!int.TryParse(clinicIdValue, out var clinicId))
             {
-                await file.CopyToAsync(stream);
+                return BadRequest("Authenticated clinic was not found.");
             }
 
-            DeleteOldProfilePictureIfOwned(request?.OldFilePath, uploadsFolder);
+            var storedFile = await clinicStorageService.SaveClinicFileAsync(
+                clinicId,
+                file,
+                HttpContext.RequestAborted,
+                "patients",
+                "profile-pictures");
+
+            clinicStorageService.DeleteClinicFileIfOwned(
+                request?.OldFilePath,
+                clinicId,
+                "patients",
+                "profile-pictures");
 
             return Ok(new ProfilePictureUploadModel
             {
-                FileName = generatedFileName,
-                FilePath = $"/uploads/patients/{generatedFileName}"
+                FileName = storedFile.FileName,
+                FilePath = storedFile.FilePath
             });
         }
 
@@ -151,27 +155,6 @@ namespace DMD.API.Controllers.Patient
 
             var data = ((SuccessResponse<PatientUploadResultModel>)result).Data;
             return Ok(data);
-        }
-
-        private static void DeleteOldProfilePictureIfOwned(string? oldFilePath, string uploadsFolder)
-        {
-            if (string.IsNullOrWhiteSpace(oldFilePath))
-                return;
-
-            var normalizedPath = oldFilePath.Replace('\\', '/').Trim();
-
-            if (!normalizedPath.StartsWith("/uploads/patients/", StringComparison.OrdinalIgnoreCase))
-                return;
-
-            var oldFileName = Path.GetFileName(normalizedPath);
-
-            if (string.IsNullOrWhiteSpace(oldFileName))
-                return;
-
-            var existingPhysicalPath = Path.Combine(uploadsFolder, oldFileName);
-
-            if (System.IO.File.Exists(existingPhysicalPath))
-                System.IO.File.Delete(existingPhysicalPath);
         }
     }
 }

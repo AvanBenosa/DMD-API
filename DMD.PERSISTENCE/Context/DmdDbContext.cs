@@ -28,16 +28,6 @@ namespace DMD.PERSISTENCE.Context
             base.OnModelCreating(builder);
 
             builder.Entity<ClinicProfile>()
-                .Property(item => item.WorkingDays)
-                .HasConversion(
-                    new ValueConverter<List<string>, string>(
-                        value => string.Join('|', value ?? new List<string>()),
-                        value => string.IsNullOrWhiteSpace(value)
-                            ? new List<string>()
-                            : value.Split('|', StringSplitOptions.None).ToList()))
-                .HasColumnType("nvarchar(max)");
-
-            builder.Entity<ClinicProfile>()
                 .HasQueryFilter(item =>
                     ShouldBypassClinicFilter
                     || (CurrentClinicId.HasValue && item.Id == CurrentClinicId.GetValueOrDefault()));

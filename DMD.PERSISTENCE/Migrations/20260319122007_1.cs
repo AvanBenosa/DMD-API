@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DMD.PERSISTENCE.Migrations
 {
     /// <inheritdoc />
-    public partial class _101 : Migration
+    public partial class _1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,15 +73,23 @@ namespace DMD.PERSISTENCE.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClinicName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BannerImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDataPrivacyAccepted = table.Column<bool>(type: "bit", nullable: false),
+                    IsLocked = table.Column<bool>(type: "bit", nullable: false),
                     OpeningTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClosingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LunchStartTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LunchEndTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WorkingDays = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsMondayOpen = table.Column<bool>(type: "bit", nullable: false),
+                    IsTuesdayOpen = table.Column<bool>(type: "bit", nullable: false),
+                    IsWednesdayOpen = table.Column<bool>(type: "bit", nullable: false),
+                    IsThursdayOpen = table.Column<bool>(type: "bit", nullable: false),
+                    IsFridayOpen = table.Column<bool>(type: "bit", nullable: false),
+                    IsSaturdayOpen = table.Column<bool>(type: "bit", nullable: false),
+                    IsSundayOpen = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -140,6 +148,31 @@ namespace DMD.PERSISTENCE.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PatientTeeth", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PublicAppointmentEmailVerifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClinicProfileId = table.Column<int>(type: "int", nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiresAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ConsumedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastSentAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PublicAppointmentEmailVerifications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -330,6 +363,7 @@ namespace DMD.PERSISTENCE.Migrations
                     ReasonForVisit = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Remarks = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentType = table.Column<int>(type: "int", nullable: false),
                     PatientInfoId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -682,6 +716,9 @@ namespace DMD.PERSISTENCE.Migrations
 
             migrationBuilder.DropTable(
                 name: "PatientUploads");
+
+            migrationBuilder.DropTable(
+                name: "PublicAppointmentEmailVerifications");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

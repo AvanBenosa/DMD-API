@@ -717,7 +717,28 @@ namespace DMD.PERSISTENCE.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsFridayOpen")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMondayOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSaturdayOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSundayOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsThursdayOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTuesdayOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsWednesdayOpen")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastUpdatedAt")
@@ -738,10 +759,6 @@ namespace DMD.PERSISTENCE.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OpeningTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WorkingDays")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -799,6 +816,60 @@ namespace DMD.PERSISTENCE.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ClinicRegistrationVerifications");
+                });
+
+            modelBuilder.Entity("DMD.DOMAIN.Entities.UserProfile.PublicAppointmentEmailVerification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClinicProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ConsumedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastSentAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastUpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PublicAppointmentEmailVerifications");
                 });
 
             modelBuilder.Entity("DMD.DOMAIN.Entities.UserProfile.UserProfile", b =>

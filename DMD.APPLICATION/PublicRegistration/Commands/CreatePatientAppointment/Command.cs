@@ -21,11 +21,9 @@ namespace DMD.APPLICATION.PublicRegistration.Commands.CreatePatientAppointment
         public string LastName { get; set; } = string.Empty;
         public string MiddleName { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
+        public string EmailVerificationCode { get; set; } = string.Empty;
         public DateTime? BirthDate { get; set; }
         public string ContactNumber { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
-        public string Occupation { get; set; } = string.Empty;
-        public string Religion { get; set; } = string.Empty;
         public DateTime AppointmentDateFrom { get; set; }
         public DateTime AppointmentDateTo { get; set; }
         public string ReasonForVisit { get; set; } = string.Empty;
@@ -53,6 +51,15 @@ namespace DMD.APPLICATION.PublicRegistration.Commands.CreatePatientAppointment
                 if (string.IsNullOrWhiteSpace(request.ExistingPatientId) &&
                     (string.IsNullOrWhiteSpace(request.FirstName) || string.IsNullOrWhiteSpace(request.LastName)))
                     return new BadRequestResponse("Patient first name and last name are required.");
+
+                if (string.IsNullOrWhiteSpace(request.ExistingPatientId))
+                {
+                    if (string.IsNullOrWhiteSpace(request.EmailAddress))
+                        return new BadRequestResponse("Email address is required for new patient registration.");
+
+                    if (string.IsNullOrWhiteSpace(request.EmailVerificationCode))
+                        return new BadRequestResponse("Email verification code is required for new patient registration.");
+                }
 
                 if (request.AppointmentDateFrom >= request.AppointmentDateTo)
                     return new BadRequestResponse("Appointment end time must be later than the start time.");
@@ -91,6 +98,7 @@ namespace DMD.APPLICATION.PublicRegistration.Commands.CreatePatientAppointment
 
                 await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
                 PatientInfo patient;
+                DMD.DOMAIN.Entities.UserProfile.PublicAppointmentEmailVerification? emailVerification = null;
 
                 if (!string.IsNullOrWhiteSpace(request.ExistingPatientId))
                 {
@@ -108,6 +116,23 @@ namespace DMD.APPLICATION.PublicRegistration.Commands.CreatePatientAppointment
                 }
                 else
                 {
+                    var verificationCode = request.EmailVerificationCode.Trim();
+                    var emailAddress = request.EmailAddress.Trim();
+                    emailVerification = await dbContext.PublicAppointmentEmailVerifications
+                        .FirstOrDefaultAsync(
+                            item =>
+                                item.ClinicProfileId == clinicId.Value &&
+                                item.EmailAddress == emailAddress &&
+                                item.ConsumedAtUtc == null,
+                            cancellationToken);
+
+                    if (emailVerification == null
+                        || emailVerification.ExpiresAtUtc < DateTime.UtcNow
+                        || !string.Equals(emailVerification.Code, verificationCode, StringComparison.Ordinal))
+                    {
+                        return new BadRequestResponse("Email verification code is invalid or expired.");
+                    }
+
                     var today = DateTime.Today;
                     var countToday = await dbContext.PatientInfos
                         .IgnoreQueryFilters()
@@ -125,10 +150,10 @@ namespace DMD.APPLICATION.PublicRegistration.Commands.CreatePatientAppointment
                         EmailAddress = request.EmailAddress?.Trim() ?? string.Empty,
                         BirthDate = request.BirthDate,
                         ContactNumber = request.ContactNumber?.Trim() ?? string.Empty,
-                        Address = request.Address?.Trim() ?? string.Empty,
-                        Occupation = request.Occupation?.Trim() ?? string.Empty,
-                        Religion = request.Religion?.Trim() ?? string.Empty,
                         ProfilePicture = string.Empty,
+                        Address = string.Empty,
+                        Occupation = string.Empty,
+                        Religion = string.Empty
                     };
 
                     dbContext.PatientInfos.Add(patient);
@@ -147,6 +172,10 @@ namespace DMD.APPLICATION.PublicRegistration.Commands.CreatePatientAppointment
                 };
 
                 dbContext.AppointmentRequests.Add(newAppointment);
+                if (emailVerification != null)
+                {
+                    emailVerification.ConsumedAtUtc = DateTime.UtcNow;
+                }
                 await dbContext.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
 
