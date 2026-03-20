@@ -1,5 +1,6 @@
 ﻿using DMD.DOMAIN.Entities;
 using DMD.DOMAIN.Entities.Appointment;
+using DMD.DOMAIN.Entities.Buildups;
 using DMD.DOMAIN.Entities.Patients;
 using DMD.DOMAIN.Entities.UserProfile;
 using Microsoft.EntityFrameworkCore;
@@ -32,5 +33,6 @@ namespace DMD.PERSISTENCE.Context
         public DbSet<PatientTeethImage> PatientTeethImages { get; set; }
 
         public DbSet<AppointmentRequest> AppointmentRequests { get; set; }
+        public DbSet<FormTemplate> FormTemplates { get; set; }
     }
 }
