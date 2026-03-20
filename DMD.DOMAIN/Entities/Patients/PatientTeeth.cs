@@ -1,4 +1,4 @@
-﻿using DMD.DOMAIN.Enums;
+using DMD.DOMAIN.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,9 @@ namespace DMD.DOMAIN.Entities.Patients
         public ToothCondition Condition { get; set; }
 
         // Dentist remarks
-        public string Remarks { get; set; }
+        public string Remarks { get; set; } = string.Empty;
 
-        public PatientTeethSurface TeethSurface { get; set; }
-
+        public ICollection<PatientTeethSurface> TeethSurfaces { get; set; } = new List<PatientTeethSurface>();
+        public ICollection<PatientTeethImage> TeethImages { get; set; } = new List<PatientTeethImage>();
     }
 }

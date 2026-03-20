@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DMD.PERSISTENCE.Migrations
 {
     [DbContext(typeof(DmdDbContext))]
-    [Migration("20260319140233_2")]
-    partial class _2
+    [Migration("20260320031814_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -564,6 +564,71 @@ namespace DMD.PERSISTENCE.Migrations
                     b.ToTable("PatientTeeth");
                 });
 
+            modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientTeethImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileMediaType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FileType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastUpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PatientTeethId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientTeethId");
+
+                    b.ToTable("PatientTeethImages");
+                });
+
             modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientTeethSurface", b =>
                 {
                     b.Property<int>("Id")
@@ -609,8 +674,7 @@ namespace DMD.PERSISTENCE.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientTeethId")
-                        .IsUnique();
+                    b.HasIndex("PatientTeethId");
 
                     b.ToTable("PatientTeethSurface");
                 });
@@ -1194,13 +1258,26 @@ namespace DMD.PERSISTENCE.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientTeethSurface", b =>
+            modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientTeethImage", b =>
                 {
-                    b.HasOne("DMD.DOMAIN.Entities.Patients.PatientTeeth", null)
-                        .WithOne("TeethSurface")
-                        .HasForeignKey("DMD.DOMAIN.Entities.Patients.PatientTeethSurface", "PatientTeethId")
+                    b.HasOne("DMD.DOMAIN.Entities.Patients.PatientTeeth", "PatientTeeth")
+                        .WithMany("TeethImages")
+                        .HasForeignKey("PatientTeethId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PatientTeeth");
+                });
+
+            modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientTeethSurface", b =>
+                {
+                    b.HasOne("DMD.DOMAIN.Entities.Patients.PatientTeeth", "PatientTeeth")
+                        .WithMany("TeethSurfaces")
+                        .HasForeignKey("PatientTeethId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PatientTeeth");
                 });
 
             modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientUploads", b =>
@@ -1282,8 +1359,9 @@ namespace DMD.PERSISTENCE.Migrations
 
             modelBuilder.Entity("DMD.DOMAIN.Entities.Patients.PatientTeeth", b =>
                 {
-                    b.Navigation("TeethSurface")
-                        .IsRequired();
+                    b.Navigation("TeethImages");
+
+                    b.Navigation("TeethSurfaces");
                 });
 
             modelBuilder.Entity("DMD.DOMAIN.Entities.UserProfile.ClinicProfile", b =>

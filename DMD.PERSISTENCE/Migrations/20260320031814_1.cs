@@ -323,6 +323,39 @@ namespace DMD.PERSISTENCE.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PatientTeethImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientTeethId = table.Column<int>(type: "int", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileType = table.Column<int>(type: "int", nullable: false),
+                    FileMediaType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    Remarks = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedById = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PatientTeethImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PatientTeethImages_PatientTeeth_PatientTeethId",
+                        column: x => x.PatientTeethId,
+                        principalTable: "PatientTeeth",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PatientTeethSurface",
                 columns: table => new
                 {
@@ -525,6 +558,7 @@ namespace DMD.PERSISTENCE.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientInfoId = table.Column<int>(type: "int", nullable: false),
+                    AssignedDoctor = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Procedure = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -661,10 +695,14 @@ namespace DMD.PERSISTENCE.Migrations
                 column: "PatientInfoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PatientTeethImages_PatientTeethId",
+                table: "PatientTeethImages",
+                column: "PatientTeethId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PatientTeethSurface_PatientTeethId",
                 table: "PatientTeethSurface",
-                column: "PatientTeethId",
-                unique: true);
+                column: "PatientTeethId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PatientUploads_PatientInfoId",
@@ -710,6 +748,9 @@ namespace DMD.PERSISTENCE.Migrations
 
             migrationBuilder.DropTable(
                 name: "PatientProgressNotes");
+
+            migrationBuilder.DropTable(
+                name: "PatientTeethImages");
 
             migrationBuilder.DropTable(
                 name: "PatientTeethSurface");

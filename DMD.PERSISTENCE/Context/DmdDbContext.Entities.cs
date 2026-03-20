@@ -29,6 +29,7 @@ namespace DMD.PERSISTENCE.Context
 
         public DbSet<PatientTeeth> PatientTeeth { get; set; }
         public DbSet<PatientTeethSurface> PatientTeethSurface { get; set; }
+        public DbSet<PatientTeethImage> PatientTeethImages { get; set; }
 
         public DbSet<AppointmentRequest> AppointmentRequests { get; set; }
     }

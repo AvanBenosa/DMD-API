@@ -1,4 +1,4 @@
-﻿using DMD.DOMAIN.Enums;
+using DMD.DOMAIN.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,8 @@ namespace DMD.DOMAIN.Entities.Patients
     {
         public int PatientTeethId { get; set; }
         public TeethSurface Surface { get; set; } // Mesial, Distal, Occlusal, Buccal, Lingual
-        public string TeethSurfaceName { get; set; }
-        public string Remarks { get; set; }
+        public string TeethSurfaceName { get; set; } = string.Empty;
+        public string Remarks { get; set; } = string.Empty;
+        public PatientTeeth? PatientTeeth { get; set; }
     }
 }
-    

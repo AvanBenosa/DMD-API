@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +11,13 @@ namespace DMD.DOMAIN.Enums
         Healthy,
         Cavity,
         Filled,
+        FilledComposite,
+        FilledTemporary,
+        FilledAmalgam,
         Crown,
         Missing,
         Implant,
-        RootCanal
+        RootCanal,
+        RootCanalTreated
     }
 }

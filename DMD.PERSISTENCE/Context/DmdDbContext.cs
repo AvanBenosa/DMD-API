@@ -69,9 +69,24 @@ namespace DMD.PERSISTENCE.Context
                         && PatientInfos.Any(patient => patient.Id == item.PatientInfoId)));
 
             builder.Entity<PatientTeeth>()
+                .HasMany(item => item.TeethSurfaces)
+                .WithOne(item => item.PatientTeeth)
+                .HasForeignKey(item => item.PatientTeethId);
+
+            builder.Entity<PatientTeeth>()
+                .HasMany(item => item.TeethImages)
+                .WithOne(item => item.PatientTeeth)
+                .HasForeignKey(item => item.PatientTeethId);
+
+            builder.Entity<PatientTeeth>()
                 .HasQueryFilter(item =>
                     ShouldBypassClinicFilter || (CurrentClinicId.HasValue
                         && PatientInfos.Any(patient => patient.Id == item.PatientInfoId)));
+
+            builder.Entity<PatientTeethImage>()
+                .HasQueryFilter(item =>
+                    ShouldBypassClinicFilter || (CurrentClinicId.HasValue
+                        && PatientTeeth.Any(teeth => teeth.Id == item.PatientTeethId)));
 
             builder.Entity<PatientTeethSurface>()
                 .HasQueryFilter(item =>
@@ -106,3 +121,5 @@ namespace DMD.PERSISTENCE.Context
         }
     }
 }
+
+
