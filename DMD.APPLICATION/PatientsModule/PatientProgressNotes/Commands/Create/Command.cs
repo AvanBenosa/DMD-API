@@ -15,8 +15,12 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Create
         public string PatientInfoId { get; set; } = string.Empty;
         public string AssignedDoctor { get; set; }
         public DateTime? Date { get; set; }
+        public DateTime? NextVisit { get; set; }
         public string Procedure { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
+        public string ClinicalFinding { get; set; } = string.Empty;
+        public string Assessment { get; set; } = string.Empty;
+        public int ToothNumber { get; set; }
         public string Remarks { get; set; } = string.Empty;
         public double Balance { get; set; }
         public string Account { get; set; } = string.Empty;
@@ -48,12 +52,16 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Create
                 {
                     PatientInfoId = patientInfoId,
                     Date = request.Date,
+                    NextVisit = request.NextVisit,
                     Procedure = request.Procedure,
                     Balance = request.Balance,
                     Amount = request.Amount,
                     TotalAmountDue = request.TotalAmountDue,
                     Remarks = request.Remarks,
                     Category = request.Category,
+                    ClinicalFinding = request.ClinicalFinding,
+                    Assessment = request.Assessment,
+                    ToothNumber = request.ToothNumber,
                     Account = request.Account,
                     Discount = request.Discount,
                     AmountPaid = request.AmountPaid,

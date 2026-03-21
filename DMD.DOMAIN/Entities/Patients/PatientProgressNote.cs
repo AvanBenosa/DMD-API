@@ -15,6 +15,15 @@ namespace DMD.DOMAIN.Entities.Patients
         public string Category { get; set; }
         public string Remarks { get; set; }
 
+        //Clinical Findings
+        public string ClinicalFinding { get; set; }
+        public string Assessment { get; set; }
+        public int ToothNumber { get; set; }
+
+        //Treatment Plan
+        public DateTime? NextVisit { get; set; }
+
+        //Payment Details
         public double Balance { get; set; }
         public string Account { get; set; }
         public double Amount { get; set; }

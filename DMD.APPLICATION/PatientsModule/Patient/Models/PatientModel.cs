@@ -9,6 +9,8 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Models
     {
         public string Id { get; set; } = string.Empty;
         public string ClinicProfileId { get; set; } = string.Empty;
+
+        public DateTime? CreatedAt { get; set; }
         public string PatientNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

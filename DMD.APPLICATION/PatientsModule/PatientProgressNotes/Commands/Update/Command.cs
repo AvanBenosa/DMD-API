@@ -17,8 +17,12 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Update
         public string PatientInfoId { get; set; } = string.Empty;
         public string AssignedDoctor { get; set; }
         public DateTime? Date { get; set; }
+        public DateTime? NextVisit { get; set; }
         public string Procedure { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
+        public string ClinicalFinding { get; set; } = string.Empty;
+        public string Assessment { get; set; } = string.Empty;
+        public int ToothNumber { get; set; }
         public string Remarks { get; set; } = string.Empty;
         public double Balance { get; set; }
         public string Account { get; set; } = string.Empty;
@@ -55,6 +59,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Update
                     return new BadRequestResponse("Item may have been modified or removed.");
 
                 item.Date = request.Date;
+                item.NextVisit = request.NextVisit;
                 item.Procedure = request.Procedure;
                 item.Balance = request.Balance;
                 item.AmountPaid = request.AmountPaid;
@@ -62,6 +67,9 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Update
                 item.TotalAmountDue = request.TotalAmountDue;
                 item.Remarks = request.Remarks;
                 item.Category = request.Category;
+                item.ClinicalFinding = request.ClinicalFinding;
+                item.Assessment = request.Assessment;
+                item.ToothNumber = request.ToothNumber;
                 item.Account = request.Account;
                 item.Amount = request.Amount;
                 item.AssignedDoctor = request.AssignedDoctor;
