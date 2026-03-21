@@ -7,5 +7,6 @@ namespace DMD.APPLICATION.Common.ProtectedIds
         public const string Appointment = "appointment-id";
         public const string User = "user-id";
         public const string FormTemplate = "form-template-id";
+        public const string ClinicExpense = "clinic-expense-id";
     }
 }

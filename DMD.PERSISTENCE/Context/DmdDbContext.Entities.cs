@@ -1,6 +1,7 @@
 ﻿using DMD.DOMAIN.Entities;
 using DMD.DOMAIN.Entities.Appointment;
 using DMD.DOMAIN.Entities.Buildups;
+using DMD.DOMAIN.Entities.FInances;
 using DMD.DOMAIN.Entities.Patients;
 using DMD.DOMAIN.Entities.UserProfile;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace DMD.PERSISTENCE.Context
     {
         public DbSet<UserProfile> UserProfiles { get;set; }
         public DbSet<ClinicProfile> ClinicProfiles { get; set; }
+        public DbSet<ClinicExpenses> ClinicExpenses { get;set;  }
         public DbSet<ClinicRegistrationVerification> ClinicRegistrationVerifications { get; set; }
         public DbSet<PublicAppointmentEmailVerification> PublicAppointmentEmailVerifications { get; set; }
 
