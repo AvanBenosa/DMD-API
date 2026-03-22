@@ -96,13 +96,31 @@ namespace DMD.APPLICATION.UserProfileModule.Commands.Create
                     return new BadRequestResponse("Username is already in use.");
                 }
 
-                var clinicExists = await dbContext.ClinicProfiles
+                var clinic = await dbContext.ClinicProfiles
                     .IgnoreQueryFilters()
-                    .AnyAsync(x => x.Id == clinicId, cancellationToken);
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == clinicId, cancellationToken);
 
-                if (!clinicExists)
+                if (clinic == null)
                 {
                     return new BadRequestResponse("Clinic profile was not found.");
+                }
+
+                var currentUserCount = await dbContext.UserProfiles
+                    .AsNoTracking()
+                    .CountAsync(x => x.ClinicId == clinicId, cancellationToken);
+
+                var userLimit = clinic.Subsciption switch
+                {
+                    SubscriptionType.Basic => 2,
+                    SubscriptionType.Standard => 10,
+                    _ => (int?)null
+                };
+
+                if (userLimit.HasValue && currentUserCount >= userLimit.Value)
+                {
+                    return new BadRequestResponse(
+                        $"{clinic.Subsciption} subscription allows up to {userLimit.Value} users only. Upgrade the plan to add more clinic accounts.");
                 }
 
                 var user = new UserProfile

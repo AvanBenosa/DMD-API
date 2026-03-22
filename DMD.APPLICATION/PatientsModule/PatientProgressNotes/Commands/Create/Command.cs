@@ -48,15 +48,17 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Create
             try
             {
                 var patientInfoId = await protectionProvider.DecryptIntIdAsync(request.PatientInfoId, ProtectedIdPurpose.Patient);
+                var totalAmountDue = request.Amount - request.Discount;
+                var balance = totalAmountDue - request.AmountPaid;
                 var newItem = new DOMAIN.Entities.Patients.PatientProgressNote
                 {
                     PatientInfoId = patientInfoId,
                     Date = request.Date,
                     NextVisit = request.NextVisit,
                     Procedure = request.Procedure,
-                    Balance = request.Balance,
+                    Balance = balance,
                     Amount = request.Amount,
-                    TotalAmountDue = request.TotalAmountDue,
+                    TotalAmountDue = totalAmountDue,
                     Remarks = request.Remarks,
                     Category = request.Category,
                     ClinicalFinding = request.ClinicalFinding,

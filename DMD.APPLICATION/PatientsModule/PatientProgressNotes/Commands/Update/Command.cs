@@ -58,13 +58,16 @@ namespace DMD.APPLICATION.PatientsModule.PatientProgressNotes.Commands.Update
                 if (item == null)
                     return new BadRequestResponse("Item may have been modified or removed.");
 
+                var totalAmountDue = request.Amount - request.Discount;
+                var balance = totalAmountDue - request.AmountPaid;
+
                 item.Date = request.Date;
                 item.NextVisit = request.NextVisit;
                 item.Procedure = request.Procedure;
-                item.Balance = request.Balance;
+                item.Balance = balance;
                 item.AmountPaid = request.AmountPaid;
                 item.Discount = request.Discount;
-                item.TotalAmountDue = request.TotalAmountDue;
+                item.TotalAmountDue = totalAmountDue;
                 item.Remarks = request.Remarks;
                 item.Category = request.Category;
                 item.ClinicalFinding = request.ClinicalFinding;

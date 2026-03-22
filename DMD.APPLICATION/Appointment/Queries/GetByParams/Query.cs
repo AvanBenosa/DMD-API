@@ -82,6 +82,7 @@ namespace DMD.APPLICATION.Appointment.Queries.GetByParams
 
                 var appointmentsQuery = dbContext.AppointmentRequests
                     .AsNoTracking()
+                    .OrderByDescending(x => x.AppointmentDateFrom)
                     .Where(x => clinicPatientIds.Contains(x.PatientInfoId));
 
                 if (request.DateFrom.HasValue)
