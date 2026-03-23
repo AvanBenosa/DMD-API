@@ -23,6 +23,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Update
         public DateTime? BirthDate { get; set; }
         public string ContactNumber { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
         public Suffix Suffix { get; set; }
         public string Occupation { get; set; } = string.Empty;
         public string Religion { get; set; } = string.Empty;
@@ -59,6 +60,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Update
                 item.EmailAddress = request.EmailAddress;
                 item.Occupation = request.Occupation;
                 item.Religion = request.Religion;
+                item.Gender = request.Gender;
                 item.CivilStatus = request.CivilStatus;
                 item.Suffix = request.Suffix;
                 item.Address = request.Address;

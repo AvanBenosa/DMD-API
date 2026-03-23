@@ -5,6 +5,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProfile.Model
     public class PatientProfileModel
     {
         public string Id { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
         public string PatientNumber { get; set; } = string.Empty;
         public string ProfilePicture { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
@@ -14,6 +15,7 @@ namespace DMD.APPLICATION.PatientsModule.PatientProfile.Model
         public DateTime? BirthDate { get; set; }
         public string ContactNumber { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
         public Suffix Suffix { get; set; }
         public string Occupation { get; set; } = string.Empty;
         public string Religion { get; set; } = string.Empty;

@@ -26,6 +26,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
         public DateTime? BirthDate { get; set; }
         public string ContactNumber { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
         public Suffix Suffix { get; set; }
         public string Occupation { get; set; } = string.Empty;
         public string Religion { get; set; } = string.Empty;
@@ -81,6 +82,8 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Commands.Create
                     EmailAddress = request.EmailAddress,
                     Occupation = request.Occupation,
                     Religion = request.Religion,
+                    Gender = request.Gender,
+                    CivilStatus = request.CivilStatus,
                     Address = request.Address,
                     ContactNumber = request.ContactNumber,
                     BirthDate = request.BirthDate,

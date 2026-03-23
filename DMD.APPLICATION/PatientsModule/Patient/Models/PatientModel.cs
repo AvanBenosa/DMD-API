@@ -10,7 +10,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Models
         public string Id { get; set; } = string.Empty;
         public string ClinicProfileId { get; set; } = string.Empty;
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string PatientNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -19,6 +19,7 @@ namespace DMD.APPLICATION.PatientsModule.Patient.Models
         public DateTime? BirthDate { get; set; }
         public string ContactNumber { get; set; }
         public string Address { get; set; }
+        public string Gender { get; set; }
         public Suffix Suffix { get; set; }
         public string Occupation { get; set; }
         public string Religion { get; set; }

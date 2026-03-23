@@ -19,6 +19,7 @@ namespace DMD.DOMAIN.Entities.Patients
         public DateTime? BirthDate { get;set;  }
         public string ContactNumber { get; set;  }
         public string Address { get; set;  }
+        public string Gender { get; set; }
         public Suffix Suffix { get; set; }
         public string Occupation { get; set; }
         public string Religion { get; set;  }
